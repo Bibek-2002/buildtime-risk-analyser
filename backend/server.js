@@ -15,7 +15,7 @@ const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 // Middleware
 app.use(cors({
   origin: [
-    'https://buildtime-risk-analyser.onrender.com/',
+    'https://buildtime-risk-analyser.onrender.com',
   ],
   credentials: true,
   methods: ['GET', 'POST', 'OPTIONS'],
