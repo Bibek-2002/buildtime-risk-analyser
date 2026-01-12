@@ -71,7 +71,7 @@ export default function App() {
 
     try {
       // Call backend API
-      const response = await axios.post('http://localhost:5000/api/analyze', formData);
+      const response = await axios.post('https://risk-analysis-backend.onrender.com', formData);
       
       // Store the analysis result
       setAnalysisResult(response.data);
