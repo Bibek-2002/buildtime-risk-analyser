@@ -71,7 +71,7 @@ export default function App() {
 
     try {
       // Call backend API
-      const response = await axios.post('https://risk-analysis-backend.onrender.com/api/analyze', formData);
+      const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/analyze`, formData);
       
       // Store the analysis result
       setAnalysisResult(response.data);
@@ -84,7 +84,7 @@ export default function App() {
       
     } catch (error) {
       console.error('Error:', error);
-      alert('Analysis failed! Make sure your backend is running on port 5000');
+      alert('Analysis failed! Make sure the backend is running and reachable.');
       setStep('form');
     }
   };

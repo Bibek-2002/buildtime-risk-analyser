@@ -122,15 +122,6 @@ Open `http://localhost:5173` in your browser and try the examples!
 
 ## 🌐 **Deployment on Render**
 
-### **Backend Deployment**
-
-1. **Create Web Service** on Render
-2. **Configuration:**
-   - **Root Directory:** `backend`
-   - **Build Command:** `npm install`
-   - **Start Command:** `npm start`
-   - **Environment Variable:** `GEMINI_API_KEY=your_key`
-
 ### **Frontend Deployment**
 
 1. **Create Static Site** on Render
@@ -138,18 +129,20 @@ Open `http://localhost:5173` in your browser and try the examples!
    - **Root Directory:** `frontend`
    - **Build Command:** `npm install && npm run build`
    - **Publish Directory:** `dist`
+3. **Set Environment Variables** on Render:
+   - Add `VITE_API_URL` (e.g., `https://your-backend.onrender.com`)
+   - *Note: Vite requires variables to be set during build time.*
 
-3. **Update `App.jsx`** with your backend URL:
-```javascript
-const response = await axios.post('https://your-backend.onrender.com/api/analyze', formData);
-```
+### **Backend Deployment**
 
-4. **Update Backend CORS** in `server.js`:
-```javascript
-app.use(cors({
-  origin: 'https://your-frontend.onrender.com'
-}));
-```
+1. **Create Web Service** on Render
+2. **Configuration:**
+   - **Root Directory:** `backend`
+   - **Build Command:** `npm install`
+   - **Start Command:** `npm start`
+3. **Set Environment Variables** on Render:
+   - Add `GEMINI_API_KEY=your_key`
+   - Add `FRONTEND_URL` (e.g., `https://your-frontend.onrender.com`)
 
 ---
 

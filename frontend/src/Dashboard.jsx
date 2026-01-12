@@ -53,7 +53,7 @@ export default function RiskAnalysisDashboard({ result, onBack }) {
     );
   }
 
-  const { metadata, riskScore, scenarios, components, recommendations, trafficSimulation, failureInfo, historicalIncidents, incidentTrend, riskDistribution, metrics, aiReasoning, assumptions: dynamicAssumptions, spikeLabel } = analysisData;
+  const { metadata, riskScore, scenarios, components, recommendations, trafficSimulation, failureInfo, similarProjectFailures, riskDistribution, metrics, aiReasoning, assumptions: dynamicAssumptions, spikeLabel } = analysisData;
 
   const getRiskColor = (score) => {
     if (score >= 7) return 'text-red-500';
@@ -355,26 +355,49 @@ export default function RiskAnalysisDashboard({ result, onBack }) {
             </div>
 
             <div className="bg-slate-800 rounded-xl p-6 border border-slate-600 lg:col-span-2">
-              <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                <LineChart className="w-5 h-5 text-blue-400" />
-                Historical Incidents Trend
-              </h2>
-              <div className="relative h-40 flex items-end justify-between gap-3">
-                {(historicalIncidents || []).map((month, idx) => {
-                  const maxIncidents = Math.max(...(historicalIncidents || []).map(m => m.incidents));
-                  const height = (month.incidents / (maxIncidents || 25)) * 100;
-                  return (
-                    <div key={idx} className="flex-1 flex flex-col items-center gap-2">
-                      <div className="w-full bg-gradient-to-t from-orange-500 to-red-500 rounded-t" style={{ height: `${height}%` }}></div>
-                      <span className="text-xs text-slate-400 font-semibold">{month.month}</span>
-                    </div>
-                  );
-                })}
-              </div>
-              {incidentTrend && (
-                <div className="mt-4 bg-yellow-900/30 border border-yellow-700 rounded p-3">
-                  <p className="text-yellow-200 text-sm"><strong>Trend:</strong> {incidentTrend}</p>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-bold flex items-center gap-2">
+                  <Activity className="w-5 h-5 text-blue-400" />
+                  Similar Project Failures (Industry Analysis)
+                </h2>
+                <div className="flex items-center gap-2 bg-blue-900/30 px-3 py-1 rounded-full border border-blue-700">
+                  <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></span>
+                  <span className="text-[10px] uppercase tracking-wider font-bold text-blue-300">Live Case-Study Match</span>
                 </div>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm">
+                  <thead>
+                    <tr className="border-b border-slate-700">
+                      <th className="pb-3 font-semibold text-slate-400">System</th>
+                      <th className="pb-3 font-semibold text-slate-400">Technical Root Cause</th>
+                      <th className="pb-3 font-semibold text-slate-400">Impact</th>
+                      <th className="pb-3 font-semibold text-slate-400">Load Factor</th>
+                      <th className="pb-3 font-semibold text-slate-400 text-green-400">Prevention Strategy</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-700/50">
+                    {(similarProjectFailures || []).map((fail, idx) => (
+                      <tr key={idx} className="hover:bg-slate-700/30 transition-colors">
+                        <td className="py-4">
+                          <div className="font-medium text-blue-400">{fail.projectName}</div>
+                          <div className="text-[10px] text-slate-500 uppercase">{fail.failedComponent}</div>
+                        </td>
+                        <td className="py-4 text-slate-300 max-w-[200px]">{fail.failureReason}</td>
+                        <td className="py-4 text-orange-400 font-semibold">{fail.downtimeDuration}</td>
+                        <td className="py-4 text-red-400 font-mono text-xs">{fail.loadAtFailure}</td>
+                        <td className="py-4">
+                          <div className="text-green-300 bg-green-900/20 p-2 rounded border border-green-800/30 text-xs">
+                            {fail.preventionStrategy}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {!similarProjectFailures?.length && (
+                <p className="text-slate-500 text-center py-4 italic">No similar project failures identified in recent history.</p>
               )}
             </div>
           </div>
