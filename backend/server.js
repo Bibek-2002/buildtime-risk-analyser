@@ -14,7 +14,9 @@ const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
 // Middleware
 app.use(cors({
-  origin: 'https://buildtime-risk-analyser.onrender.com',
+  origin: [
+    'https://buildtime-risk-analyser.onrender.com/',
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -108,11 +110,13 @@ Please analyze and provide:
    - failurePoint: string describing when system fails. THIS MUST correspond to the 'time' in trafficSimulation where the spike is highest or where the system would realistically fail based on the components.
    - failureComponent: which component fails at that point
 
-7. Historical incidents (5 months) with:
-   - month: string (e.g., "Jan", "Feb", "Mar", "Apr", "May")
-   - incidents: number (varying realistically, 8-25 range)
-   - severity: decimal number (4.0-9.0 range)
-   - trend: string describing the trend
+7. Similar Project Failures (Last 1 Year):
+   - projectName: string (fictional but industry-specific name)
+   - failureReason: string (technical root cause, e.g., "DNS propagation delay during blue-green deployment")
+   - downtimeDuration: string (e.g., "15m", "2h 40m")
+   - loadAtFailure: string (e.g., "12k req/s", "85% CPU saturation")
+   - failedComponent: string (specific architectural part)
+   - preventionStrategy: string (one specific technical measure that would have prevented this)
 
 8. Risk distribution with:
    - category: string ("Infrastructure", "Dependencies", "Architecture", "Monitoring")
@@ -178,14 +182,16 @@ Respond in valid JSON format only:
     "failurePoint": "string",
     "failureComponent": "string"
   },
-  "historicalIncidents": [
+  "similarProjectFailures": [
     {
-      "month": "string",
-      "incidents": number,
-      "severity": decimal_number
+      "projectName": "string",
+      "failureReason": "string",
+      "downtimeDuration": "string",
+      "loadAtFailure": "string",
+      "failedComponent": "string",
+      "preventionStrategy": "string"
     }
   ],
-  "incidentTrend": "string",
   "riskDistribution": [
     {
       "category": "string",
@@ -335,12 +341,32 @@ function generateFallbackAnalysis(data) {
       failurePoint: `${trafficSim[Math.floor(seededRandom(3, 6))].time} (${Math.round(seededRandom(1000, 3000))} req/s spike)`,
       failureComponent: compNames[0] || 'System'
     },
-    historicalIncidents: ['Jan', 'Feb', 'Mar', 'Apr', 'May'].map(month => ({
-      month,
-      incidents: Math.floor(seededRandom(5, 20)),
-      severity: seededRandom(3, 8).toFixed(1)
-    })),
-    incidentTrend: 'Fluctuating reliability patterns detected',
+    similarProjectFailures: [
+      {
+        projectName: 'Global-Retail-App-X',
+        failureReason: 'Database connection pool exhaustion during flash sale',
+        downtimeDuration: '45 minutes',
+        loadAtFailure: '15k req/s (5x normal)',
+        failedComponent: 'PostgreSQL RDS',
+        preventionStrategy: 'Implement PgBouncer for connection pooling and request queuing'
+      },
+      {
+        projectName: 'FinTech-Gateway-v2',
+        failureReason: 'Memory leak in auth microservice leading to OOM kills',
+        downtimeDuration: '2 hours',
+        loadAtFailure: '8k req/s (2x normal)',
+        failedComponent: 'Auth Service',
+        preventionStrategy: 'Configure JVM heap limits and implement memory usage alerting'
+      },
+      {
+        projectName: 'HealthCare-Portal-Alpha',
+        failureReason: 'Unbounded queue growth in message broker',
+        downtimeDuration: '3.5 hours',
+        loadAtFailure: '12k req/s (3x normal)',
+        failedComponent: 'RabbitMQ Cluster',
+        preventionStrategy: 'Set message TTL and implement dead-letter exchanges (DLX)'
+      }
+    ],
     riskDistribution: [
       { category: 'Infrastructure', percentage: 40, color: 'bg-red-500' },
       { category: 'Dependencies', percentage: 30, color: 'bg-orange-500' },
