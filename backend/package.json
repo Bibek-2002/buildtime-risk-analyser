@@ -9,6 +9,9 @@
     "dev": "node --watch server.js",
     "test": "node test-gemini.mjs"
   },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "keywords": [
     "gemini",
     "ai",
@@ -21,7 +24,6 @@
     "@google/generative-ai": "^0.21.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
-    "express": "^4.21.2",
-    "install": "^0.13.0"
+    "express": "^4.21.2"
   }
 }

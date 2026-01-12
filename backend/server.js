@@ -6,7 +6,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 dotenv.config();
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 // Initialize Gemini - Using gemini-2.5-flash as specified
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
